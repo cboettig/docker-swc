@@ -8,14 +8,14 @@ At this point, this is really just to see if a Dockerfile would be useful.
 
 ### Getting Started
 
-- [Install Docker for your system](https://docs.docker.com/installation)
+- [Install Docker for your system](https://docs.docker.com/installation) or cloud server.
 
 - Run:
 
 ```bash
 docker run -d -p 8888:8888 -p 8787:8787 --name swc cboettig/swc
 ```
-- boot2docker users (Mac/Windows): run: `boot2docker ip` to get the IP address (`<ip>` below).  Linux users can just use `localhost`.
+- boot2docker users (Mac/Windows): run: `boot2docker ip` to get the IP address (`<ip>` below).  Linux users can just use `localhost`, or the public IP of your cloud server.
 
 - For RStudio Server, go to: `http://<ip>:8787`
 - For an iPython Notebook, go to: `http://<ip>:8888`
@@ -35,6 +35,8 @@ Note  that `swc` is the name we gave when running the container above, while `us
 your saved container.
 
 ### Possible TODOs
+
+- [ ] Secure the login for the iPython Notebook
 
 * add Anaconda: default install starts from a 300mb which seems like overkill
 * add Python IDEs: with Wing or PyCharm; both have installers; or just Spyder?
