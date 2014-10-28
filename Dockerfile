@@ -10,57 +10,28 @@
 ##     setup_ipython_notebook
 ##     ipython notebook 
 
-
 FROM rocker/rstudio
 MAINTAINER Carl Boettiger cboettig@ropensci.org
 
-## Packages 
-RUN apt-get update && apt-get install -y --no-install-recommends \ 
-    ipython \
-    ipython-notebook \
-    python \
-    python-matplotlib \
-    python-numpy \
-    python-scipy \
-    python-statsmodels \
-    sqlite3 
-
-## Additional packages as recommended from: https://gist.github.com/jiffyclub/5512074
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    emacs \
-    dnsutils \
-    dkms \
-    gcc \
-    gedit \
-    make \
-    mercurial \
-    nano \
-    subversion \
-    r-cran-ggplot2 \
-    r-cran-plyr \
-    r-cran-rcurl \ 
-    r-cran-reshape2 \
-    r-cran-xml \ 
-    vim 
-
-COPY setup_ipython_notebook.sh /usr/bin/setup_ipython_notebook
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-## Create a user 
-RUN adduser --disabled-password --gecos '' swc
-RUN adduser swc sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN chown swc:swc /var/log/supervisor 
-RUN chown swc:swc /usr/bin/ipython
-
-# Expose the iPython Notebook port. 8787 already exposed for RStudio
+## Adapted from https://github.com/ipython/docker-notebook ##
+VOLUME /notebooks
+WORKDIR /notebooks
 EXPOSE 8888
 
-## Switch to user and working directory
-WORKDIR /home/swc
+## You can mount your own SSL certs as necessary here
+ENV PEM_FILE /key.pem
+# $PASSWORD will get `unset` within notebook.sh, turned into an IPython style hash
+ENV PASSWORD Dont make this your default
+
+ADD notebook.sh /usr/bin/notebook.sh
+RUN chmod u+x /usr/bin/notebook.sh
+
+
+############## 
 
 ## To have a container run multiple & persistent tasks, we use 
 ## the very simple supervisord as recommended in Docker documentation.
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord"] 
 
 
